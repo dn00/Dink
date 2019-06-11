@@ -6,13 +6,13 @@ using System.Text;
 
 namespace Dink
 {
-    public class MainService
+    public class BotService
     {
         private System.Threading.Thread MainThread { get; set; }
         private bool MainThreadRunning;
         private List<NoxInstance> NoxInstances;
         private IConfiguration _config { get; set; }
-        public MainService(IConfiguration conf)
+        public BotService(IConfiguration conf)
         {
             _config = conf;
             NoxInstances = BuildNoxInstancesFromConfig();
