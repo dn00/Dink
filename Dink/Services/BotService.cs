@@ -25,13 +25,6 @@ namespace Dink
             MainThreadRunning = true;
             MainThread = new System.Threading.Thread(MainThreadFunc);
             MainThread.Start();
-
-            //Process[] processlist = Process.GetProcesses();
-
-            //foreach (Process theprocess in processlist)
-            //{
-            //    Console.WriteLine("Process: {0} ID: {1}", theprocess.MainWindowTitle, theprocess.Id);
-            //}
         }
 
         private void MainThreadFunc()
@@ -40,8 +33,8 @@ namespace Dink
             {
                 while (MainThreadRunning)
                 {
-                    ADBCommandService.SendClick(NoxInstances["Denk"].ADBDevice, 418, 277);
-                    //Console.WriteLine(NoxInstances.Count);
+                    bool result = ADBCommandService.CheckPixel(NoxInstances["Denk"].ADBDevice, 841, 480, "8abd51");
+                    Console.WriteLine(result);
                 }
             }
             catch (Exception ex)
@@ -62,7 +55,7 @@ namespace Dink
                 // For now we only run bot if Nox is already opened
                 foreach (Process theprocess in processlist)
                 {
-                    //Console.WriteLine("Process: {0} ID: {1}", theprocess.MainWindowTitle, theprocess.Id);
+                    //Console.WriteLine("Process: {0} ID: {1}", theprocess.MainWindowTitle, theprocess.MainWindowHandle);
                     if (theprocess.MainWindowTitle == item["name"])
                     {
                         Console.WriteLine("Creating: " + item["name"] + " Serial: " + item["serial"]);
