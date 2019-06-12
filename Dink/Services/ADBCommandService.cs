@@ -43,5 +43,25 @@ namespace Dink.Services
             }
             return sb.ToString();
         }
+
+        private static String RunCommand(DeviceData device, String command)
+        {
+            var receiver = new ConsoleOutputReceiver();
+            AdbClient.Instance.ExecuteRemoteCommand(command, device, receiver);
+            return receiver.ToString();
+        }
+
+        public static bool IsL2RRunning(DeviceData device)
+        {
+            String command = "dumpsys activity | grep top-activity";
+            String result = RunCommand(device, command);
+            Console.WriteLine(result);
+
+            if (result.IndexOf("netmarble") > -1)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
