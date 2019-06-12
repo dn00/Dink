@@ -128,7 +128,7 @@ namespace Dink.Services
             } 
             catch (Exception ex)
             {
-                Console.WriteLine("WARNING --- Something went wrong in respawn()");
+                Console.WriteLine("WARNING --- Something went wrong in respawn() " + ex.ToString());
                 return false;
             }
         }
@@ -158,7 +158,7 @@ namespace Dink.Services
             ushort.TryParse(_data["macros:login:x"], out ushort xLog);
             ushort.TryParse(_data["macros:login:y"], out ushort yLog);
             ADBCommandService.SendClick(device, xLog, yLog);
-            Thread.Sleep(60000);
+            Thread.Sleep(100000);
 
             // Maybe add another check here
 

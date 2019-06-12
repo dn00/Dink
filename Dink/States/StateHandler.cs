@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Dink.Actions
 {
-    public class ActionHandler
+    public class StateHandler
     {
         private static ushort resultCode;
         public static ushort DoAction(String noxName, ActionType actionType)

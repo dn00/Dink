@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Utils\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="AutoItX3.Assembly">
       <HintPath>bin\Debug\netcoreapp2.2\AutoItX\AutoItX3.Assembly.dll</HintPath>
     </Reference>

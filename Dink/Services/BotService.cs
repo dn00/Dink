@@ -1,5 +1,7 @@
-﻿using Dink.Model;
+﻿using Dink.Actions;
+using Dink.Model;
 using Dink.Services;
+using Dink.States;
 using Microsoft.Extensions.Configuration;
 using SharpAdbClient;
 using System;
@@ -27,6 +29,8 @@ namespace Dink
             MainThreadRunning = true;
             MainThread = new System.Threading.Thread(MainThreadFunc);
             MainThread.Start();
+
+ 
         }
 
         private void MainThreadFunc()
