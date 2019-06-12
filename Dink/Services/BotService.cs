@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
 
 namespace Dink
 {
@@ -22,6 +23,7 @@ namespace Dink
             _config = conf;
             _adbService = adbService;
             NoxInstances = BuildNoxInstancesFromConfig();
+            BotCommandService.init();
             MainThreadRunning = true;
             MainThread = new System.Threading.Thread(MainThreadFunc);
             MainThread.Start();
@@ -31,10 +33,26 @@ namespace Dink
         {
             try
             {
+                // Main Bot logic. Starting out, we only deal with one instance of Nox.
                 while (MainThreadRunning)
                 {
-                    bool result = ADBCommandService.CheckPixel(NoxInstances["Denk"].ADBDevice, 841, 480, "8abd51");
-                    Console.WriteLine(result);
+                    DeviceData device = NoxInstances["Denk"].ADB;
+                    if (!ADBCommandService.IsL2RRunning(device))
+                    {
+                        BotCommandService.StartL2R(device);
+                        BotCommandService.EnterFarm(device, true);
+                        BotCommandService.Respawn(device, true);
+                    }
+                    
+                    //if (BotCommandService.NeedRespawn(device))
+                    //{
+                    //    BotCommandService.Respawn(device);
+                    //} else
+                    //{
+                        // We failed so we should restart Nox. Or close L2R and wait
+                    //}
+
+                    Thread.Sleep(20000); // Sleep 20 seconds
                 }
             }
             catch (Exception ex)
@@ -52,6 +70,7 @@ namespace Dink
 
             foreach (var item in instanceNames)
             {
+                bool isFound = false;
                 // For now we only run bot if Nox is already opened
                 foreach (Process theprocess in processlist)
                 {
@@ -66,9 +85,16 @@ namespace Dink
                             NoxName = item["nox_name"],
                             CharacterSelectValue = charValue,
                             Serial = item["serial"],
-                            ADBDevice = _adbService.getDevice(item["serial"])
+                            ADB = _adbService.getDevice(item["serial"])
                         });
+
+                        isFound = true;
                     }
+                }
+
+                if (!isFound)
+                {
+                    Console.WriteLine(String.Format("Warning --- {0} Nox is not opened", item["name"]));
                 }
           
             }

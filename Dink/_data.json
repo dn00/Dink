@@ -1,0 +1,107 @@
+{
+  "pixels": {
+    "login_screen": {
+      "color": "858585",
+      "coords": {
+        "x": 123,
+        "y": 123
+      }
+    },
+    "start_char_button": {
+      "color": "dddd",
+      "coords": {
+        "x": 123,
+        "y": 123
+      }
+    },
+    "respawn_button": {
+      "color": "ddd",
+      "coords": {
+        "x": 123,
+        "y": 123
+      }
+    },
+   "tabbed_menus": {
+      "color": "ddd",
+      "coords": {
+        "x": 123,
+        "y": 123
+      }
+    }
+  },
+  "respawn": {
+    "check_sleep_time": 30000,
+    "elite_select": {
+      "x": 123,
+      "y": 123
+    },
+    "location": {
+      "elite": {
+        "x": 123,
+        "y": 123
+      },
+      "field": {
+        "x": 123,
+        "y": 123
+      }
+    }
+  },
+  "macros": {
+    "login": {
+      "x": 123,
+      "y": 123
+    },
+    "char_enter": {
+      "x": 123,
+      "y": 123
+    },
+    "respawn_button": {
+      "x": 123,
+      "y": 123
+    },
+    "hottime_x": {
+      "x": 123,
+      "y": 123
+    },
+    "map": {
+      "x": 123,
+      "y": 123
+    },
+    "mount_bug": {
+      "x": 123,
+      "y": 123
+    },
+    "auto_button": {
+      "x": 123,
+      "y": 123
+    },
+    "tabbed_clan_button_1": {
+      "x": 123,
+      "y": 123
+    },
+    "tabbed_clan_button_2": {
+      "x": 123,
+      "y": 123
+    },
+    "members_button": {
+      "x": 123,
+      "y": 123
+    },
+    "right_exit_button": {
+      "x": 123,
+      "y": 123
+    },
+    "normal_menu_button": {
+      "x": 123,
+      "y": 123
+    },
+    "elite_dungeons_button": {
+      "x": 123,
+      "y": 123
+    },
+    "elite_enter": {
+      "x": 123,
+      "y": 123
+    }
+  }
+}

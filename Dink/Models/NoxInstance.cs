@@ -11,7 +11,7 @@ namespace Dink.Model
         public String NoxName { get; set; }
         public ushort CharacterSelectValue { get; set; }
         public String Serial { get; set; }
-        public DeviceData ADBDevice { get; set; }
+        public DeviceData ADB { get; set; }
 
     }
 }

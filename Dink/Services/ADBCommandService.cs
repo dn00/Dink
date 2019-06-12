@@ -63,5 +63,26 @@ namespace Dink.Services
             }
             return false;
         }
+
+        public static bool LaunchL2R(DeviceData device)
+        {
+            String command = "am start -n com.netmarble.lin2ws/com.epicgames.ue4.GameActivity";
+            String result = RunCommand(device, command);
+
+            return true;
+        }
+        public static bool KillL2R(DeviceData device)
+        {
+            String command = "am force-stop com.netmarble.lin2ws";
+            String result = RunCommand(device, command);
+
+            return true;
+        }
+
+
+        public static void SwipeRight(DeviceData device)
+        {
+
+        }
     }
 }
