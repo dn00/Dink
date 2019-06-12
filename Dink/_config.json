@@ -7,16 +7,19 @@
     {
       "name": "Denk",
       "nox_name": "Nox_1",
+      "serial" : "62025",
       "char_value": 1
     },
     {
       "name": "KPop",
       "nox_name": "Nox_2",
+      "serial" :  "62026",
       "char_value": 1
     },
     {
       "name": "Kazu",
       "nox_name": "Nox_3",
+      "serial": "62001",
       "char_value": 1
     }
   ]

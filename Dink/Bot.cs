@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Dink.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace Dink
             ServiceProvider provider = services.BuildServiceProvider();
 
             provider.GetRequiredService<BotService>();
+            provider.GetRequiredService<ADBService>();
 
             await Task.Delay(-1);
         }
@@ -50,6 +52,7 @@ namespace Dink
         {
             services.AddSingleton<IConfiguration>(_config);
             services.AddSingleton<BotService>();
+            services.AddSingleton<ADBService>();
         }
     }
 }

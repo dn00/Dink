@@ -9,6 +9,7 @@ namespace Dink.Model
         public String CharacterName { get; set; }
         public String NoxName { get; set; }
         public ushort CharacterSelectValue { get; set; }
+        public String Serial { get; set; }
 
     }
 }

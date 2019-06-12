@@ -1,4 +1,5 @@
 ﻿using Dink.Model;
+using Dink.Services;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,12 @@ namespace Dink
         private bool MainThreadRunning;
         private List<NoxInstance> NoxInstances;
         private IConfiguration _config { get; set; }
-        public BotService(IConfiguration conf)
+        private ADBService _adbService { get; set; }
+
+        public BotService(IConfiguration conf, ADBService adbService)
         {
             _config = conf;
+            _adbService = adbService;
             NoxInstances = BuildNoxInstancesFromConfig();
             MainThreadRunning = true;
             MainThread = new System.Threading.Thread(MainThreadFunc);
@@ -27,7 +31,7 @@ namespace Dink
             {
                 while (MainThreadRunning)
                 {
-                    Console.WriteLine(NoxInstances.Count);
+                    //Console.WriteLine(NoxInstances.Count);
                 }
             }
             catch (Exception ex)
@@ -48,7 +52,8 @@ namespace Dink
                 {
                     CharacterName = item["name"],
                     NoxName = item["nox_name"],
-                    CharacterSelectValue = charValue
+                    CharacterSelectValue = charValue,
+                    Serial = item["serial"]
                 });
 
             }
