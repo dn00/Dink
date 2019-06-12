@@ -1,8 +1,10 @@
 ﻿using Dink.Model;
 using Dink.Services;
 using Microsoft.Extensions.Configuration;
+using SharpAdbClient;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Dink
@@ -11,7 +13,7 @@ namespace Dink
     {
         private System.Threading.Thread MainThread { get; set; }
         private bool MainThreadRunning;
-        private List<NoxInstance> NoxInstances;
+        private Dictionary<String, NoxInstance> NoxInstances { get; set; }
         private IConfiguration _config { get; set; }
         private ADBService _adbService { get; set; }
 
@@ -23,6 +25,13 @@ namespace Dink
             MainThreadRunning = true;
             MainThread = new System.Threading.Thread(MainThreadFunc);
             MainThread.Start();
+
+            //Process[] processlist = Process.GetProcesses();
+
+            //foreach (Process theprocess in processlist)
+            //{
+            //    Console.WriteLine("Process: {0} ID: {1}", theprocess.MainWindowTitle, theprocess.Id);
+            //}
         }
 
         private void MainThreadFunc()
@@ -31,6 +40,7 @@ namespace Dink
             {
                 while (MainThreadRunning)
                 {
+                    ADBCommandService.SendClick(NoxInstances["Denk"].ADBDevice, 418, 277);
                     //Console.WriteLine(NoxInstances.Count);
                 }
             }
@@ -40,22 +50,34 @@ namespace Dink
             }
         }
 
-        private List<NoxInstance> BuildNoxInstancesFromConfig()
+        private Dictionary<String, NoxInstance> BuildNoxInstancesFromConfig()
         {
             var instanceNames = _config.GetSection("instances").GetChildren();
-            List<NoxInstance> ListOfInstances = new List<NoxInstance>();
+            Dictionary<String, NoxInstance> ListOfInstances = new Dictionary<String, NoxInstance>();
+
+            Process[] processlist = Process.GetProcesses();
+
             foreach (var item in instanceNames)
             {
-                Console.WriteLine(item["name"]);
-                ushort.TryParse(item["char_value"], out ushort charValue);
-                ListOfInstances.Add(new NoxInstance
+                // For now we only run bot if Nox is already opened
+                foreach (Process theprocess in processlist)
                 {
-                    CharacterName = item["name"],
-                    NoxName = item["nox_name"],
-                    CharacterSelectValue = charValue,
-                    Serial = item["serial"]
-                });
-
+                    //Console.WriteLine("Process: {0} ID: {1}", theprocess.MainWindowTitle, theprocess.Id);
+                    if (theprocess.MainWindowTitle == item["name"])
+                    {
+                        Console.WriteLine("Creating: " + item["name"] + " Serial: " + item["serial"]);
+                        ushort.TryParse(item["char_value"], out ushort charValue);
+                        ListOfInstances.Add(item["name"], new NoxInstance
+                        {
+                            CharacterName = item["name"],
+                            NoxName = item["nox_name"],
+                            CharacterSelectValue = charValue,
+                            Serial = item["serial"],
+                            ADBDevice = _adbService.getDevice(item["serial"])
+                        });
+                    }
+                }
+          
             }
 
             return ListOfInstances;

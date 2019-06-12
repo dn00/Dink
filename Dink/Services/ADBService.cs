@@ -25,7 +25,7 @@ namespace Dink.Services
             {
                 //var receiver = new ConsoleOutputReceiver();
                 //AdbClient.Instance.ExecuteRemoteCommand("dumpsys iphonesubinfo2", device, receiver);
-                //Console.WriteLine(device.Serial.Substring(device.Serial.Length - 5));
+                Console.WriteLine(device.Serial.Substring(device.Serial.Length - 5) + ";;;;" + serial);
                 if (device.Serial.Substring(device.Serial.Length - 5).Equals(serial)) {
                     return device;
                 }
