@@ -147,7 +147,7 @@ namespace Dink.Services
         {
         Restart:
             ADBCommandService.LaunchL2R(device);
-            Thread.Sleep(30000);
+            Thread.Sleep(40000);
 
             if (!IsLoginScreen(device))
             {
@@ -158,9 +158,14 @@ namespace Dink.Services
             ushort.TryParse(_data["macros:login:x"], out ushort xLog);
             ushort.TryParse(_data["macros:login:y"], out ushort yLog);
             ADBCommandService.SendClick(device, xLog, yLog);
-            Thread.Sleep(20000);
+            Thread.Sleep(60000);
 
             // Maybe add another check here
+
+            ushort.TryParse(_data["macros:exit_ad:x"], out ushort xExit);
+            ushort.TryParse(_data["macros:exit_ad:y"], out ushort yExit);
+            ADBCommandService.SendClick(device, xExit, yExit);
+            Thread.Sleep(3000);
 
             ushort.TryParse(_data["macros:char_enter:x"], out ushort xChar);
             ushort.TryParse(_data["macros:char_enter:y"], out ushort yChar);
@@ -168,6 +173,11 @@ namespace Dink.Services
             Thread.Sleep(60000);
 
             // Maybe add another check here
+
+            ushort.TryParse(_data["macros:exit_reward:x"], out ushort xRew);
+            ushort.TryParse(_data["macros:exit_reward:y"], out ushort yRew);
+            ADBCommandService.SendClick(device, xRew, yRew);
+            Thread.Sleep(2000);
 
             return true;
         }

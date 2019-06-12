@@ -36,13 +36,25 @@ namespace Dink
                 // Main Bot logic. Starting out, we only deal with one instance of Nox.
                 while (MainThreadRunning)
                 {
-                    DeviceData device = NoxInstances["Denk"].ADB;
-                    if (!ADBCommandService.IsL2RRunning(device))
+                    foreach (KeyValuePair<String,NoxInstance> item in NoxInstances)
                     {
-                        BotCommandService.StartL2R(device);
-                        BotCommandService.EnterFarm(device, true);
-                        BotCommandService.Respawn(device, true);
+                        DeviceData device = item.Value.ADB;
+                        if (!ADBCommandService.IsL2RRunning(device))
+                        {
+                            BotCommandService.StartL2R(device);
+                            //BotCommandService.EnterFarm(device, true);
+                            //BotCommandService.Respawn(device, true);
+                        }
+
                     }
+
+                    //DeviceData device = NoxInstances["Denk"].ADB;
+                    //if (!ADBCommandService.IsL2RRunning(device))
+                    //{
+                    //    BotCommandService.StartL2R(device);
+                        //BotCommandService.EnterFarm(device, true);
+                        //BotCommandService.Respawn(device, true);
+                    //}
                     
                     //if (BotCommandService.NeedRespawn(device))
                     //{
