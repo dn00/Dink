@@ -7,7 +7,7 @@ namespace Dink.Services
 {
     public static class ADBCommandService
     {
-        public static void SendClick(DeviceData device, uint x, uint y)
+        public static void SendClick(DeviceData device, ushort x, ushort y)
         {
             var receiver = new ConsoleOutputReceiver();
 
@@ -17,12 +17,12 @@ namespace Dink.Services
             //Console.WriteLine(receiver.ToString());
         }
 
-        public static bool CheckPixel(DeviceData device, uint x, uint y, String pixelColor)
+        public static bool CheckPixel(DeviceData device, ushort x, ushort y, String pixelColor)
         {
             var receiver = new ConsoleOutputReceiver();
-            uint skip = 1280 * y + x;
+            uint offset = (uint)1280 * y + x;
 
-            String command = $"cd /data; screencap screen.dump; dd if='screen.dump' bs=4 count=1 skip={skip} 2>/dev/null";
+            String command = $"cd /data; screencap screen.dump; dd if='screen.dump' bs=4 count=1 skip={offset} 2>/dev/null";
             AdbClient.Instance.ExecuteRemoteCommand(command, device, receiver);
 
             string result = StringToHex(receiver.ToString()).Substring(0,6);
