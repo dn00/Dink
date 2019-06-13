@@ -22,7 +22,10 @@ namespace Dink
         private IConfiguration _data { get; set; }
         private ADBService _adbService { get; set; }
 
-        private List<State> States { get; set; }
+        private List<State> LoginStates { get; set; }
+
+        private bool IsMainGameScreen { get; set; }
+        private bool RunElite { get; set; }
 
         public BotService(IConfiguration conf, ADBService adbService)
         {
@@ -33,6 +36,9 @@ namespace Dink
             builder = SelectConfigureFilesAsync(builder);                              // Select custom config.json files for Bekim or Tiff
             _data = builder.Build();
 
+
+            CreateLoginStates();
+
             _adbService = adbService;
             NoxInstances = BuildNoxInstancesFromConfig();
             BotCommandService.init();
@@ -40,23 +46,29 @@ namespace Dink
             MainThread = new System.Threading.Thread(MainThreadFunc);
             MainThread.Start();
 
+            // For now we only run elite dungeons
+            RunElite = true;
+
  
         }
 
         private IConfigurationBuilder SelectConfigureFilesAsync(IConfigurationBuilder builder)
         {
-            builder.AddJsonFile("_config.json", optional: false, reloadOnChange: true);     // Add this (json encoded) file to the configuration
+            builder.AddJsonFile("_data.json", optional: false, reloadOnChange: true);     // Add this (json encoded) file to the configuration
             return builder;
         }
 
         // Maybe use factory pattern for this
-        private void createInitialStates()
+        private void CreateLoginStates()
         {
-            States = new List<State>();
-            States.Add(new StateDeadL2R(_data));
-            States.Add(new StateLoginScreen(_data));
-            States.Add(new StateCharSelect(_data));
-            States.Add(new StateWeeklyRewardsDialog(_data));
+            IsMainGameScreen = false;
+            LoginStates = new List<State>();
+            LoginStates.Add(new StateDeadL2R(_data));
+            LoginStates.Add(new StateLoginScreen(_data));
+            LoginStates.Add(new StateCharSelectAD(_data));
+            LoginStates.Add(new StateCharSelect(_data));
+            LoginStates.Add(new StateWeeklyRewardsDialog(_data));
+            LoginStates.Add(new StateInGameMainScreen(_data));
         }
 
         private void MainThreadFunc()
@@ -66,6 +78,42 @@ namespace Dink
                 // Main Bot logic. Starting out, we only deal with one instance of Nox.
                 while (MainThreadRunning)
                 {
+                    DeviceData device = NoxInstances["Denk"].ADB;
+
+                    // Check if in Main screen
+                    //if (LoginStates[LoginStates.Count - 1].IsState(device))
+                    //{
+                    //    IsMainGameScreen = true;
+                    //}
+                    if (!IsMainGameScreen)
+                    {
+                        foreach (State item in LoginStates)
+                        {
+                            Console.WriteLine("State: " + item.GetType());
+
+                            if (item.IsState(NoxInstances["Denk"].ADB))
+                            {
+                                if (item.Run(device))
+                                {
+
+                                }
+                                else
+                                {
+                                    ADBCommandService.KillL2R(device);
+                                    BotCommandService.StartL2R(device);
+                                    break;
+                                }
+                            }
+                        }
+                        if (LoginStates[LoginStates.Count - 1].IsState(device)) {
+                            IsMainGameScreen = true;
+                        }
+                    } else
+                    {
+
+                    }
+
+                  
                     //foreach (KeyValuePair<String,NoxInstance> item in NoxInstances)
                     //{
                     //    DeviceData device = item.Value.ADB;

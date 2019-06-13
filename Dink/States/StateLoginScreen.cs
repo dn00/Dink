@@ -13,16 +13,16 @@ namespace Dink.States
     {
         public StateLoginScreen(IConfiguration data) : base(data)
         {
-            ushort.TryParse(_data["pixels:StateLoginScreen:coords:x"], out ushort x);
-            ushort.TryParse(_data["pixels:StateLoginScreen:coords:y"], out ushort y);
+            ushort.TryParse(_data["pixels:state_login_screen:coords:x"], out ushort x);
+            ushort.TryParse(_data["pixels:state_login_screen:coords:y"], out ushort y);
             Sig = new Signifier
             {
-                Color = _data["pixels:StateLoginScreen:color"],
+                Color = _data["pixels:state_login_screen:color"],
                 X = x,
                 Y = y
             };
 
-            Next = new StateCharSelect(data);
+            Next = new StateCharSelectAD(data);
         }
 
         public override bool IsState(DeviceData device)
@@ -45,14 +45,14 @@ namespace Dink.States
             Thread.Sleep(2000);
 
             ushort maxWaitSeconds;
-
-        Login:
-            maxWaitSeconds = 100;
             ushort.TryParse(_data["macros:login:x"], out ushort xLogin);
             ushort.TryParse(_data["macros:login:y"], out ushort yLogin);
+        Login:
+
             ADBCommandService.SendClick(device, xLogin, yLogin);
 
-            while(maxWaitSeconds > 0)
+            maxWaitSeconds = 100;
+            while (maxWaitSeconds > 0)
             {
                Thread.Sleep(1000);
                if (Next.IsState(device))

@@ -55,8 +55,11 @@ namespace Dink.States
             
             while (maxWaitSeconds > 0)
             {
+                Console.WriteLine(" maxWaitSeconds DEADL2R");
+
                 if (Next.IsState(device))
                 {
+                    Console.WriteLine("NEXT STATE DEADL2R");
                     return true;
                 }
                 Thread.Sleep(1000);
