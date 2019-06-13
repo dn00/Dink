@@ -11,10 +11,10 @@ namespace Dink.Actions
     {
         public IConfiguration _data { get; set; } 
         public Signifier Sig { get; set; }
-        public State(IConfiguration data, Signifier s)
+        public State Next { get; set; }
+        public State(IConfiguration data)
         {
             _data = data;
-            Sig = s;
         }
         /// <summary>
         /// The next state
@@ -26,7 +26,8 @@ namespace Dink.Actions
         /// </summary>
         /// <param name="device"></param>
         /// <returns></returns>
-        public abstract State Run(DeviceData device);
+        public abstract bool Run(DeviceData device);
+        public abstract bool IsState(DeviceData device);
 
     }
 }

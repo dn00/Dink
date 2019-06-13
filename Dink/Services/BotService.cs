@@ -5,6 +5,7 @@ using Dink.States;
 using Microsoft.Extensions.Configuration;
 using SharpAdbClient;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -18,11 +19,20 @@ namespace Dink
         private bool MainThreadRunning;
         private Dictionary<String, NoxInstance> NoxInstances { get; set; }
         private IConfiguration _config { get; set; }
+        private IConfiguration _data { get; set; }
         private ADBService _adbService { get; set; }
+
+        private List<State> States { get; set; }
 
         public BotService(IConfiguration conf, ADBService adbService)
         {
             _config = conf;
+
+            IConfigurationBuilder builder = new ConfigurationBuilder();                     // Create a new instance of the config builder
+            builder.SetBasePath(AppContext.BaseDirectory);                                  // Specify the default location for the config file
+            builder = SelectConfigureFilesAsync(builder);                              // Select custom config.json files for Bekim or Tiff
+            _data = builder.Build();
+
             _adbService = adbService;
             NoxInstances = BuildNoxInstancesFromConfig();
             BotCommandService.init();
@@ -33,6 +43,22 @@ namespace Dink
  
         }
 
+        private IConfigurationBuilder SelectConfigureFilesAsync(IConfigurationBuilder builder)
+        {
+            builder.AddJsonFile("_config.json", optional: false, reloadOnChange: true);     // Add this (json encoded) file to the configuration
+            return builder;
+        }
+
+        // Maybe use factory pattern for this
+        private void createInitialStates()
+        {
+            States = new List<State>();
+            States.Add(new StateDeadL2R(_data));
+            States.Add(new StateLoginScreen(_data));
+            States.Add(new StateCharSelect(_data));
+            States.Add(new StateWeeklyRewardsDialog(_data));
+        }
+
         private void MainThreadFunc()
         {
             try
@@ -40,33 +66,18 @@ namespace Dink
                 // Main Bot logic. Starting out, we only deal with one instance of Nox.
                 while (MainThreadRunning)
                 {
-                    foreach (KeyValuePair<String,NoxInstance> item in NoxInstances)
-                    {
-                        DeviceData device = item.Value.ADB;
-                        if (!ADBCommandService.IsL2RRunning(device))
-                        {
-                            BotCommandService.StartL2R(device);
-                            //BotCommandService.EnterFarm(device, true);
-                            //BotCommandService.Respawn(device, true);
-                        }
-
-                    }
-
-                    //DeviceData device = NoxInstances["Denk"].ADB;
-                    //if (!ADBCommandService.IsL2RRunning(device))
+                    //foreach (KeyValuePair<String,NoxInstance> item in NoxInstances)
                     //{
-                    //    BotCommandService.StartL2R(device);
-                        //BotCommandService.EnterFarm(device, true);
-                        //BotCommandService.Respawn(device, true);
+                    //    DeviceData device = item.Value.ADB;
+                    //    if (!ADBCommandService.IsL2RRunning(device))
+                    //    {
+                    //        BotCommandService.StartL2R(device);
+                    //        //BotCommandService.EnterFarm(device, true);
+                    //       //BotCommandService.Respawn(device, true);
+                    //    }
                     //}
-                    
-                    //if (BotCommandService.NeedRespawn(device))
-                    //{
-                    //    BotCommandService.Respawn(device);
-                    //} else
-                    //{
-                        // We failed so we should restart Nox. Or close L2R and wait
-                    //}
+
+                
 
                     Thread.Sleep(20000); // Sleep 20 seconds
                 }

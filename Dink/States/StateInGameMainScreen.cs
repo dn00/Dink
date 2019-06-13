@@ -9,11 +9,24 @@ namespace Dink.States
 {
     class StateInGameMainScreen : State
     {
-        public StateInGameMainScreen(IConfiguration data, Signifier s) : base(data, s)
+        public StateInGameMainScreen(IConfiguration data) : base(data)
         {
+            Sig = new Signifier
+            {
+                Color = _data["macro:"],
+                X = 1,
+                Y = 2
+            };
+
+            //Next = new StateWeeklyRewardsDialog(data);
         }
 
-        public override State Run(DeviceData device)
+        public override bool IsState(DeviceData device)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Run(DeviceData device)
         {
             throw new NotImplementedException();
         }

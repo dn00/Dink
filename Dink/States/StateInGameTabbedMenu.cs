@@ -9,11 +9,16 @@ namespace Dink.States
 {
     class StateInGameTabbedMenu : State
     {
-        public StateInGameTabbedMenu(IConfiguration data, Signifier s) : base(data, s)
+        public StateInGameTabbedMenu(IConfiguration data) : base(data)
         {
         }
 
-        public override State Run(DeviceData device)
+        public override bool IsState(DeviceData device)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool Run(DeviceData device)
         {
             throw new NotImplementedException();
         }

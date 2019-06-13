@@ -25,6 +25,7 @@ namespace Dink
             //string hostingEnv = (string)env["Hosting:Environment"];
 
             builder.AddJsonFile("_config.json", optional: false, reloadOnChange: true);     // Add this (json encoded) file to the configuration
+
             return builder;
         }
 
