@@ -2,6 +2,7 @@
 using Dink.Model;
 using Dink.Services;
 using Dink.States;
+using Dink.States.Enum;
 using Microsoft.Extensions.Configuration;
 using SharpAdbClient;
 using System;
@@ -23,9 +24,13 @@ namespace Dink
         private ADBService _adbService { get; set; }
 
         private List<State> LoginStates { get; set; }
+        private List<State> EliteTransition { get; set; }
 
+        // These fields needs to be in NoxInstances
         private bool IsMainGameScreen { get; set; }
         private bool RunElite { get; set; }
+
+        private BotState _State;
 
         public BotService(IConfiguration conf, ADBService adbService)
         {
@@ -37,7 +42,8 @@ namespace Dink
             _data = builder.Build();
 
 
-            CreateLoginStates();
+            BuildLoginStates();
+            //BuildEliteDungeonTransition();
 
             _adbService = adbService;
             NoxInstances = BuildNoxInstancesFromConfig();
@@ -59,16 +65,64 @@ namespace Dink
         }
 
         // Maybe use factory pattern for this
-        private void CreateLoginStates()
+        private void BuildLoginStates()
         {
-            IsMainGameScreen = false;
+            //IsMainGameScreen = false;
             LoginStates = new List<State>();
             LoginStates.Add(new StateDeadL2R(_data));
             LoginStates.Add(new StateLoginScreen(_data));
             LoginStates.Add(new StateCharSelectAD(_data));
             LoginStates.Add(new StateCharSelect(_data));
-            LoginStates.Add(new StateWeeklyRewardsDialog(_data));
+            //LoginStates.Add(new StateWeeklyRewardsDialog(_data));
             LoginStates.Add(new StateInGameMainScreen(_data));
+        }
+
+        private void BuildEliteDungeonTransition()
+        {
+            State IgnMainScTabbed = new InGameMainScreenToTabbed(_data);
+            State FirstTabbedMenus = IgnMainScTabbed.Next;
+            State TabbedDungMenu = new TabbedDungeonMenu(_data);
+            State EliteDungMenu = new EliteDungeonsMenu(_data);
+            //State EliteSelect = new EliteDungeonSelect(_data);
+            //State StateElite = new StateInEliteDungeon(_data);
+
+            //IgnMainScTabbed.Next = TabbedDungMenu;
+            FirstTabbedMenus.Next = TabbedDungMenu;
+            TabbedDungMenu.Next = EliteDungMenu;
+            //DailyDungMenu.Next = EliteDungMenu;
+            //EliteDungMenu.Next = EliteSelect;
+
+
+            EliteTransition = new List<State>();
+            EliteTransition.Add(IgnMainScTabbed);
+            EliteTransition.Add(FirstTabbedMenus);
+            EliteTransition.Add(TabbedDungMenu);
+            EliteTransition.Add(EliteDungMenu);
+            //EliteTransition.Add(EliteSelect);
+            //EliteTransition.Add(StateElite);
+        
+        }
+
+        private BotState GetCurrentBotState(DeviceData device)
+        {
+            // Check if in Main screen
+            if (LoginStates[LoginStates.Count - 1].IsState(device))
+            {
+                if (RunElite)
+                {
+                    return BotState.GOTO_ELITE;
+                }
+                return BotState.MAIN_INGAME_SCREEN;
+            } if (EliteTransition[EliteTransition.Count - 1].IsState(device))
+            {
+                if (RunElite)
+                {
+                    return BotState.RUN_ELITE;
+                }
+            }
+     
+            return BotState.L2R_DEAD;
+
         }
 
         private void MainThreadFunc()
@@ -84,14 +138,22 @@ namespace Dink
                     //if (LoginStates[LoginStates.Count - 1].IsState(device))
                     //{
                     //    IsMainGameScreen = true;
+                    //} 
+                    //else
+                    //{
+                    //    IsMainGameScreen = false;
+                    //    ADBCommandService.KillL2R(device);
                     //}
-                    if (!IsMainGameScreen)
+                    _State = GetCurrentBotState(device);
+                    Console.WriteLine("----BotState: " + _State);
+
+                    if (_State == BotState.L2R_DEAD)
                     {
                         foreach (State item in LoginStates)
                         {
                             Console.WriteLine("State: " + item.GetType());
 
-                            if (item.IsState(NoxInstances["Denk"].ADB))
+                            if (item.IsState(device))
                             {
                                 if (item.Run(device))
                                 {
@@ -99,21 +161,41 @@ namespace Dink
                                 }
                                 else
                                 {
-                                    ADBCommandService.KillL2R(device);
-                                    BotCommandService.StartL2R(device);
                                     break;
                                 }
                             }
                         }
-                        if (LoginStates[LoginStates.Count - 1].IsState(device)) {
-                            IsMainGameScreen = true;
+                    
+                    }
+                    else if (_State == BotState.GOTO_ELITE)
+                    {
+                        foreach (State item in EliteTransition)
+                        {
+                            Console.WriteLine("State: " + item.GetType());
+
+                            if (item.IsState(device))
+                            {
+                                if (item.Run(device))
+                                {
+
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
                         }
-                    } else
+                    }
+                    else if (_State == BotState.RUN_ELITE)
+                    {
+
+                    }
+                    else if (_State == BotState.RUN_RESPAWN_ELITE)
                     {
 
                     }
 
-                  
+
                     //foreach (KeyValuePair<String,NoxInstance> item in NoxInstances)
                     //{
                     //    DeviceData device = item.Value.ADB;
@@ -125,7 +207,7 @@ namespace Dink
                     //    }
                     //}
 
-                
+
 
                     Thread.Sleep(20000); // Sleep 20 seconds
                 }

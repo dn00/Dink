@@ -78,6 +78,13 @@ namespace Dink.Services
 
             return true;
         }
+        public static bool SendTab(DeviceData device)
+        {
+            String command = "input keyevent 61";
+            String result = RunCommand(device, command);
+
+            return true;
+        }
 
 
         public static void SwipeRight(DeviceData device)
