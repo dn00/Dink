@@ -17,7 +17,8 @@ namespace Dink.States.Transition.ToElite
 
         public override bool IsStartState(DeviceData device)
         {
-            return GStateInGameMagMainScreen.IsState(device, _data) || GStateInGameMainScreen.IsState(device, _data);
+            //return GStateInGameMagMainScreen.IsState(device, _data) || GStateInGameMainScreen.IsState(device, _data);
+            return true;
         }
 
 

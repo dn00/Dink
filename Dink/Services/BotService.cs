@@ -84,7 +84,6 @@ namespace Dink
         {
             EliteTransition = new List<Transition>();
             EliteTransition.Add(new TransitionMoveToElite(_data));
-
         }
 
         private BotState GetCurrentBotState(DeviceData device)
