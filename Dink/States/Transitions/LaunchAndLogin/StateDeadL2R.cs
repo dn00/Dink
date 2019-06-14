@@ -44,7 +44,9 @@ namespace Dink.States
         {
             ushort maxWaitSeconds = 100;
 
-        Relaunch: 
+        Relaunch:
+            ADBCommandService.KillL2R(device);
+            Thread.Sleep(5000);
             ADBCommandService.LaunchL2R(device);
             Thread.Sleep(5000);
             if (!ADBCommandService.IsL2RRunning(device))

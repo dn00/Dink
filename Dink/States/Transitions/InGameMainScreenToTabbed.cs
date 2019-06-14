@@ -26,7 +26,7 @@ namespace Dink.States
                 Y = y
             };
 
-            Next = new FirstTabbedMenu(data);
+            //Next = new FirstTabbedMenu(data);
         }
 
         /// <summary>

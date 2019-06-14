@@ -9,20 +9,20 @@ using System.Threading;
 
 namespace Dink.States
 {
-    class StateCharSelectAD : State
+    class StateCharSelect : State
     {
-        public StateCharSelectAD(IConfiguration data) : base(data)
+        public StateCharSelect(IConfiguration data) : base(data)
         {
-            ushort.TryParse(_data["pixels:char_select_screen_ad:coords:x"], out ushort x);
-            ushort.TryParse(_data["pixels:char_select_screen_ad:coords:y"], out ushort y);
+            ushort.TryParse(_data["pixels:char_select_screen:coords:x"], out ushort x);
+            ushort.TryParse(_data["pixels:char_select_screen:coords:y"], out ushort y);
             Sig = new Signifier
             {
-                Color = _data["pixels:char_select_screen_ad:color"],
+                Color = _data["pixels:char_select_screen:color"],
                 X = x,
                 Y = y
             };
 
-            Next = new StateCharSelect(data);
+            Next = new StateWeeklyRewardsDialog(data);
         }
 
         public override bool IsState(DeviceData device)
@@ -40,15 +40,17 @@ namespace Dink.States
 
             ushort maxWaitSeconds;
 
-            ushort.TryParse(_data["macros:char_select_exit_ad:x"], out ushort x);
-            ushort.TryParse(_data["macros:char_select_exit_ad:y"], out ushort y);
+            ushort.TryParse(_data["macros:char_enter_game_button:x"], out ushort x);
+            ushort.TryParse(_data["macros:char_enter_game_button:y"], out ushort y);
+            maxWaitSeconds = 200;
 
-        OutAd:
+        EnterGame:
             ADBCommandService.SendClick(device, x, y);
-            maxWaitSeconds = 20;
 
             while (maxWaitSeconds > 0)
             {
+                Console.WriteLine("State: " + GetType());
+
                 Thread.Sleep(1000);
                 if (Next.IsState(device))
                 {
@@ -56,13 +58,12 @@ namespace Dink.States
                 }
                 else if (IsState(device))
                 {
-                    goto OutAd;
+                    goto EnterGame;
                 }
                 --maxWaitSeconds;
             }
 
             return false;
-
 
         }
     }

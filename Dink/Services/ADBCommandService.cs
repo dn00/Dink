@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Dink.Services
 {
@@ -16,6 +17,17 @@ namespace Dink.Services
             Console.WriteLine($"Click sent to {x} {y}");
             //Console.WriteLine(receiver.ToString());
         }
+
+        public static void SendTripleClick(DeviceData device, ushort x, ushort y)
+        {
+            SendClick(device, x, y);
+            Thread.Sleep(500);
+            SendClick(device, x, y);
+            Thread.Sleep(500);
+            SendClick(device, x, y);
+            Thread.Sleep(500);
+        }
+
 
         public static bool CheckPixel(DeviceData device, ushort x, ushort y, String pixelColor)
         {

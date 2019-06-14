@@ -54,6 +54,7 @@ namespace Dink.States
             maxWaitSeconds = 100;
             while (maxWaitSeconds > 0)
             {
+
                Thread.Sleep(1000);
                if (Next.IsState(device))
                {

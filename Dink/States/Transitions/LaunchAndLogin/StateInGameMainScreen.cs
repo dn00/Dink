@@ -1,5 +1,6 @@
 ﻿using Dink.Actions;
 using Dink.Services;
+using Dink.States.BotState;
 using Microsoft.Extensions.Configuration;
 using SharpAdbClient;
 using System;
@@ -32,11 +33,13 @@ namespace Dink.States
             {
                 return true;
             }
-            return false;
+
+            return GStateInGameMagMainScreen.IsState(device, _data) || GStateInGameMainScreen.IsState(device, _data);
         }
 
         public override bool Run(DeviceData device)
         {
+            Thread.Sleep(10000);
             return true;
         }
     }

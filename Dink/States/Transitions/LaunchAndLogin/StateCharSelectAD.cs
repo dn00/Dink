@@ -9,20 +9,20 @@ using System.Threading;
 
 namespace Dink.States
 {
-    class StateCharSelect : State
+    class StateCharSelectAD : State
     {
-        public StateCharSelect(IConfiguration data) : base(data)
+        public StateCharSelectAD(IConfiguration data) : base(data)
         {
-            ushort.TryParse(_data["pixels:char_select_screen:coords:x"], out ushort x);
-            ushort.TryParse(_data["pixels:char_select_screen:coords:y"], out ushort y);
+            ushort.TryParse(_data["pixels:char_select_screen_ad:coords:x"], out ushort x);
+            ushort.TryParse(_data["pixels:char_select_screen_ad:coords:y"], out ushort y);
             Sig = new Signifier
             {
-                Color = _data["pixels:char_select_screen:color"],
+                Color = _data["pixels:char_select_screen_ad:color"],
                 X = x,
                 Y = y
             };
 
-            Next = new StateWeeklyRewardsDialog(data);
+            Next = new StateCharSelect(data);
         }
 
         public override bool IsState(DeviceData device)
@@ -40,12 +40,12 @@ namespace Dink.States
 
             ushort maxWaitSeconds;
 
-            ushort.TryParse(_data["macros:char_enter_game_button:x"], out ushort x);
-            ushort.TryParse(_data["macros:char_enter_game_button:y"], out ushort y);
+            ushort.TryParse(_data["macros:char_select_exit_ad:x"], out ushort x);
+            ushort.TryParse(_data["macros:char_select_exit_ad:y"], out ushort y);
 
-        EnterGame:
+        OutAd:
             ADBCommandService.SendClick(device, x, y);
-            maxWaitSeconds = 200;
+            maxWaitSeconds = 120;
 
             while (maxWaitSeconds > 0)
             {
@@ -56,12 +56,13 @@ namespace Dink.States
                 }
                 else if (IsState(device))
                 {
-                    goto EnterGame;
+                    goto OutAd;
                 }
                 --maxWaitSeconds;
             }
 
             return false;
+
 
         }
     }
