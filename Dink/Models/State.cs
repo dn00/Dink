@@ -7,6 +7,9 @@ using System.Text;
 
 namespace Dink.Actions
 {
+    /// <summary>
+    /// The current state of L2R
+    /// </summary>
     public abstract class State
     {
         public IConfiguration _data { get; set; } 

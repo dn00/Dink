@@ -17,6 +17,9 @@ using System.Threading;
 
 namespace Dink
 {
+    /// <summary>
+    /// Main logic of the bot. We currently use State and Transition.
+    /// </summary>
     public class BotService
     {
         private System.Threading.Thread MainThread { get; set; }
@@ -67,6 +70,9 @@ namespace Dink
             return builder;
         }
 
+        /// <summary>
+        /// Build the states required to login in the game 
+        /// </summary>
         // Maybe use factory pattern for this
         private void BuildLoginStates()
         {
@@ -80,12 +86,20 @@ namespace Dink
             LoginStates.Add(new StateInGameMainScreen(_data));
         }
 
+        /// <summary>
+        /// Build the states required to go from the main screen into an elite dungeon.
+        /// </summary>
         private void BuildEliteDungeonTransition()
         {
             EliteTransition = new List<Transition>();
             EliteTransition.Add(new TransitionMoveToElite(_data));
         }
 
+        /// <summary>
+        /// Find the in-game screen we're on.
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
         private BotState GetCurrentBotState(DeviceData device)
         {
             // Check if in Main screen
@@ -113,6 +127,9 @@ namespace Dink
 
         }
 
+        /// <summary>
+        /// Main bot thread.
+        /// </summary>
         private void MainThreadFunc()
         {
             try
@@ -120,9 +137,10 @@ namespace Dink
                 // Main Bot logic. Starting out, we only deal with one instance of Nox.
                 while (MainThreadRunning)
                 {
-          
 
-                        DeviceData device = NoxInstances["Kazu"].ADB;
+                    foreach (KeyValuePair<String, NoxInstance> dev in NoxInstances)
+                    {
+                        DeviceData device = dev.Value.ADB;
 
                         // Check if in Main screen
                         //if (LoginStates[LoginStates.Count - 1].IsState(device))
@@ -175,6 +193,10 @@ namespace Dink
                                     }
                                 }
                             }
+
+                            // For testing purposes
+                            MainThreadRunning = false;
+
                         }
                         else if (_State == BotState.RUN_ELITE)
                         {
@@ -184,7 +206,7 @@ namespace Dink
                         {
 
                         }
-
+                    }
                    
                     //foreach (KeyValuePair<String,NoxInstance> item in NoxInstances)
                     //{
@@ -208,6 +230,11 @@ namespace Dink
             }
         }
 
+        /// <summary>
+        /// Build Nox instances from our config
+        /// TODO move this somewhere else
+        /// </summary>
+        /// <returns>Dictionary<String, NoxInstance></String></returns>
         private Dictionary<String, NoxInstance> BuildNoxInstancesFromConfig()
         {
             var instanceNames = _config.GetSection("instances").GetChildren();

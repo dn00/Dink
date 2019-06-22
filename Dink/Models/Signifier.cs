@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Dink.States
 {
+    /// <summary>
+    /// We use this class for data partaining to the current state of the game.
+    /// </summary>
     public class Signifier
     {
         public String Color {get; set;}

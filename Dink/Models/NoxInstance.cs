@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Dink.Model
 {
+    /// <summary>
+    /// Object that holds data for a Nox instance.
+    /// </summary>
     public class NoxInstance
     {
         public String CharacterName { get; set; }

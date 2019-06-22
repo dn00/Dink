@@ -47,9 +47,13 @@ namespace Dink
             await Task.Delay(-1);
         }
 
+        /// <summary>
+        /// Configure services for dependency injection
+        /// </summary>
+        /// <param name="services">Collections of services</param>
+        /// <returns></returns>
         #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async Task ConfigureServicesAsync(IServiceCollection services)
-        #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             services.AddSingleton<IConfiguration>(_config);
             services.AddSingleton<BotService>();

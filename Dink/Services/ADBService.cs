@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Dink.Services
 {
+    /// <summary>
+    /// Lower level commands for ADB
+    /// </summary>
     public class ADBService
     {
         private IConfiguration _config { get; set; }
@@ -17,6 +20,11 @@ namespace Dink.Services
             var result = _server.StartServer($"{AppContext.BaseDirectory}\\platform-tools\\adb.exe", restartServerIfNewer: false);
         }
 
+        /// <summary>
+        /// Get emulator the matches the serial argument
+        /// </summary>
+        /// <param name="serial">Serial # of the emulator.</param>
+        /// <returns></returns>
         public DeviceData getDevice(String serial)
         {
             var devices = AdbClient.Instance.GetDevices();
@@ -34,6 +42,9 @@ namespace Dink.Services
             return null;
         }
 
+        /// <summary>
+        /// List all running emulator serials
+        /// </summary>
         public void listDeviceSerial()
         {
             var devices = AdbClient.Instance.GetDevices();

@@ -7,6 +7,10 @@ using System.Threading;
 
 namespace Dink.Services
 {
+    /// <summary>
+    /// Macros for the bot. We don't use this anymore. Instead, we use state and transition classes. 
+    /// TODO refactor
+    /// </summary>
     public static class BotCommandService
     {
         private static IConfiguration _data { get; set; }
@@ -25,6 +29,11 @@ namespace Dink.Services
             return builder;
         }
 
+        /// <summary>
+        /// Check if the current state is the login screen
+        /// </summary>
+        /// <param name="device">The device data object.</param>
+        /// <returns></returns>
         public static bool IsLoginScreen(DeviceData device)
         {
             String color = _data["pixels:login_screen:color"];
@@ -37,6 +46,7 @@ namespace Dink.Services
             }
             return false;
         }
+
 
         public static void EnterFarm(DeviceData device, bool isElite)
         {
